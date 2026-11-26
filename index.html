@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<base target="_top">
+<title>SCAIRY</title>
+<meta name="theme-color" content="#0F2A3A">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiI+PHJlY3Qgd2lkdGg9IjIwMCIgaGVpZ2h0PSIyMDAiIGZpbGw9IiMwRjJBM0EiLz48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgwLC04KSI+PGRlZnM+PGNsaXBQYXRoIGlkPSJ1aWRhcmsiPjxwb2x5Z29uIHBvaW50cz0iMzYsMTA0IDE2NCwxMDQgMTQ2LDE1MCAxMDQsMTc2IDYwLDE1MiIvPjwvY2xpcFBhdGg+PC9kZWZzPgo8cG9seWdvbiBwb2ludHM9IjY2LDk4IDk2LDQwIDExMCw2MiAxMjAsNTIgMTM4LDk4IiBmaWxsPSIjRjRGNUYyIi8+CjxyZWN0IHg9IjIwIiB5PSI5OSIgd2lkdGg9IjE2MCIgaGVpZ2h0PSIzIiByeD0iMS41IiBmaWxsPSIjNkNDM0NGIi8+CjxnIGNsaXAtcGF0aD0idXJsKCN1aWRhcmspIiBmaWxsPSIjNkNDM0NGIj4KPHJlY3QgeD0iMzAiIHk9IjEwOCIgd2lkdGg9IjE0MCIgaGVpZ2h0PSI2Ii8+PHJlY3QgeD0iMzAiIHk9IjEyMCIgd2lkdGg9IjExMiIgaGVpZ2h0PSI2Ii8+PHJlY3QgeD0iMzAiIHk9IjEzMiIgd2lkdGg9IjE0MCIgaGVpZ2h0PSI2Ii8+PHJlY3QgeD0iMzAiIHk9IjE0NCIgd2lkdGg9Ijk2IiBoZWlnaHQ9IjYiLz48cmVjdCB4PSIzMCIgeT0iMTU2IiB3aWR0aD0iMTQwIiBoZWlnaHQ9IjYiLz48cmVjdCB4PSIzMCIgeT0iMTY4IiB3aWR0aD0iMTIwIiBoZWlnaHQ9IjYiLz4KPC9nPjwvZz48L3N2Zz4=">
+<style>
+:root {
+  color-scheme: light;
+  font-family: "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  color: #203642;
+  background: #F4F5F2;
+  --ink: #0F2A3A;
+  --action: #185F70;
+  --line: #D7E1E3;
+  --paper: #fff;
+}
+* { box-sizing: border-box; }
+body { margin: 0; }
+main { max-width: 54rem; margin: auto; padding: clamp(1rem, 4vw, 2rem); }
+header {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  border-radius: 1.5rem;
+  padding: clamp(1.25rem, 5vw, 2.75rem);
+  background: #0F2A3A;
+  color: #fff;
+}
+header::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  pointer-events: none;
+  inset: auto 0 0 auto;
+  width: 42%;
+  height: 68%;
+  background: repeating-linear-gradient(
+    to bottom, transparent 0 15px, #6CC3CF 15px 16px
+  );
+  mask-image: linear-gradient(120deg, transparent 24%, #000);
+  opacity: .18;
+}
+.toolbar { display: flex; justify-content: space-between; align-items: center; gap: .75rem; }
+.brand {
+  display: block;
+  width: clamp(7.75rem, 24vw, 12rem);
+  height: auto;
+  margin-inline-start: -.35rem;
+}
+header.compact .brand { width: clamp(7.25rem, 19vw, 9rem); }
+header.compact::after { opacity: .08; }
+h1 {
+  font: 750 clamp(2rem, 6.5vw, 3.45rem)/1.06 "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  letter-spacing: -.035em;
+  max-width: 22ch;
+  text-wrap: balance;
+  margin: 1.4rem 0 .65rem;
+}
+h2 { color: var(--ink); font-size: 1.3rem; margin: 0 0 1rem; letter-spacing: -.018em; }
+p { line-height: 1.6; }
+#intro { max-width: 62ch; margin: 0; color: #E1EEF0; }
+header.compact { padding-block: 1rem; }
+header.compact h1 { font-size: clamp(1.45rem, 4vw, 2rem); max-width: none; margin: .65rem 0 0; }
+header.compact #intro { display: none; }
+#language {
+  appearance: none;
+  color: #fff;
+  font-size: .875rem;
+  line-height: 1.4;
+  font-family: inherit;
+  font-weight: 600;
+  border: 1px solid #6C9AA9;
+  border-radius: .5rem;
+  padding: .55rem 2rem .55rem .7rem;
+  background: #183A4B url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='m1 1 5 5 5-5' fill='none' stroke='white' stroke-width='1.5'/%3E%3C/svg%3E") no-repeat right .7rem center;
+}
+#steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: .6rem; margin: 1.25rem 0; }
+#steps[hidden] { display: none; }
+.step {
+  background: transparent;
+  color: #46606C;
+  border: 0;
+  border-top: .23rem solid #CDDCE0;
+  border-radius: 0;
+  padding: .45rem 0 0;
+  font-size: .875rem;
+  text-align: left;
+}
+.step.past { border-color: #79ADB8; }
+.step[aria-current] { border-color: var(--action); color: var(--ink); font-weight: 800; }
+section {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 1.1rem;
+  padding: clamp(1rem, 4vw, 1.7rem);
+  margin-bottom: 1rem;
+  box-shadow: 0 4px 10px #0F2A3A0B;
+}
+section > p:first-of-type { margin-top: 0; }
+.field, fieldset { margin: 0 0 1.3rem; }
+.field:last-child, fieldset:last-child { margin-bottom: 0; }
+fieldset { border: 0; padding: 0; min-width: 0; }
+legend, .field > label { display: block; font-weight: 700; margin-bottom: .65rem; line-height: 1.4; }
+.choices { display: flex; flex-wrap: wrap; gap: .5rem; }
+.option {
+  display: flex;
+  align-items: center;
+  gap: .55rem;
+  border: 1px solid #BCCFD4;
+  border-radius: .65rem;
+  padding: .65rem .75rem;
+  min-height: 2.75rem;
+  font-weight: 550;
+  cursor: pointer;
+}
+.option:hover { background: #EDF6F7; }
+.option:has(input:checked), .matrix td:has(input:checked) {
+  background: #DEF2F4;
+  border-color: #2B8C9E;
+}
+.option input, .matrix input {
+  accent-color: var(--action);
+  width: 1.1rem;
+  height: 1.1rem;
+  flex: none;
+  margin: 0;
+}
+.check { margin-top: 1rem; align-items: flex-start; }
+.check input { margin-top: .16rem; }
+textarea {
+  width: 100%;
+  min-height: 5.8rem;
+  resize: vertical;
+  font: inherit;
+  color: inherit;
+  border-radius: .65rem;
+  padding: .75rem;
+  border: 1px solid #BACECE;
+  background: #F7FAFA;
+}
+.actions { display: flex; justify-content: space-between; gap: .75rem; }
+button {
+  font: inherit;
+  min-height: 2.75rem;
+  padding: .65rem 1.1rem;
+  border-radius: .65rem;
+  border: 1px solid var(--action);
+  background: var(--action);
+  color: #fff;
+  font-weight: 750;
+  cursor: pointer;
+}
+button:hover { background: var(--ink); }
+button:disabled { opacity: .65; cursor: wait; }
+.actions button:last-child { margin-inline-start: auto; }
+button.back { background: var(--paper); color: var(--action); border-color: #A6C2C9; }
+button.back:hover { background: #E5F0F2; }
+:focus-visible { outline: 3px solid #176887; outline-offset: 3px; }
+#status { min-height: 1.5em; color: #435B65; }
+#status[data-state="thanks"] { color: var(--ink); font-weight: 750; font-size: 1.2rem; }
+.matrix-wrap { overflow-x: auto; }
+.matrix { border-collapse: collapse; width: 100%; table-layout: fixed; }
+.matrix th, .matrix td { padding: .65rem .3rem; border-bottom: 1px solid var(--line); text-align: center; }
+.matrix thead th { font-size: .875rem; overflow-wrap: anywhere; background: #EBF3F4; }
+.matrix thead td, .matrix tbody th { width: 31%; }
+.matrix tbody th { text-align: left; font-weight: 650; padding-inline-end: .85rem; }
+.matrix tbody tr:nth-child(even) { background: #F7FAFA; }
+.matrix td label { display: grid; place-items: center; min-height: 2.25rem; cursor: pointer; }
+@media (max-width: 42rem) {
+  .matrix-mobile .choices { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .35rem; }
+  .matrix-mobile label {
+    display: grid;
+    grid-template-rows: 1fr auto;
+    place-items: center;
+    text-align: center;
+    font-size: .875rem;
+    padding: .45rem .15rem;
+    overflow-wrap: anywhere;
+    min-width: 0;
+  }
+  .matrix-mobile .option span { max-width: 100%; }
+}
+</style>
+</head>
+<body><main>
+<header id="survey-header">
+<div class="toolbar"><img class="brand" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMzAgNTIwIDE1NiIgd2lkdGg9IjIwNzkiIGhlaWdodD0iNjI0Ij48cmVjdCB5PSIzMCIgd2lkdGg9IjUxOS42ODAwMDAwMDAwMDAxIiBoZWlnaHQ9IjIyMCIgZmlsbD0iIzBGMkEzQSIvPjxkZWZzPjxjbGlwUGF0aCBpZD0idWhkYXJrIj48cG9seWdvbiBwb2ludHM9IjM2LDEwNCAxNjQsMTA0IDE0NiwxNTAgMTA0LDE3NiA2MCwxNTIiLz48L2NsaXBQYXRoPjwvZGVmcz4KPHBvbHlnb24gcG9pbnRzPSI2Niw5OCA5Niw0MCAxMTAsNjIgMTIwLDUyIDEzOCw5OCIgZmlsbD0iI0Y0RjVGMiIvPgo8cmVjdCB4PSIyMCIgeT0iOTkiIHdpZHRoPSIxNjAiIGhlaWdodD0iMyIgcng9IjEuNSIgZmlsbD0iIzZDQzNDRiIvPgo8ZyBjbGlwLXBhdGg9InVybCgjdWhkYXJrKSIgZmlsbD0iIzZDQzNDRiI+CjxyZWN0IHg9IjMwIiB5PSIxMDgiIHdpZHRoPSIxNDAiIGhlaWdodD0iNiIvPjxyZWN0IHg9IjMwIiB5PSIxMjAiIHdpZHRoPSIxMTIiIGhlaWdodD0iNiIvPjxyZWN0IHg9IjMwIiB5PSIxMzIiIHdpZHRoPSIxNDAiIGhlaWdodD0iNiIvPjxyZWN0IHg9IjMwIiB5PSIxNDQiIHdpZHRoPSI5NiIgaGVpZ2h0PSI2Ii8+PHJlY3QgeD0iMzAiIHk9IjE1NiIgd2lkdGg9IjE0MCIgaGVpZ2h0PSI2Ii8+PHJlY3QgeD0iMzAiIHk9IjE2OCIgd2lkdGg9IjEyMCIgaGVpZ2h0PSI2Ii8+CjwvZz4KPGcgZmlsbD0iI0Y0RjVGMiIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMjAwLjAwLDEyOC4wMCkgc2NhbGUoMC4wODAwMCwtMC4wODAwMCkiPgo8cGF0aCB0cmFuc2Zvcm09InRyYW5zbGF0ZSgwLjAsMCkiIGQ9Ik0zMTAuMDQ5OTI2NzU3ODEyNSAtMTRRMjMwLjA5OTg1MzUxNTYyNSAtMTQgMTY4LjYyNDgxNjg5NDUzMTI1IDE0LjU2MjUzMDUxNzU3ODEyNVExMDcuMTQ5NzgwMjczNDM3NSA0My4xMjUwNjEwMzUxNTYyNSA3Mi4zMjQ3NjgwNjY0MDYyNSA5Ny4yMTI1NTQ5MzE2NDA2MlEzNy40OTk3NTU4NTkzNzUgMTUxLjMwMDA0ODgyODEyNSAzNy40OTk3NTU4NTkzNzUgMjI4LjY5OTk1MTE3MTg3NVYyNTUuMTI1MDYxMDM1MTU2MjVIMTU1Ljk1MDU2MTUyMzQzNzVWMjI4LjY5OTk1MTE3MTg3NVExNTUuOTUwNTYxNTIzNDM3NSAxNTkuNzUwMzY2MjEwOTM3NSAxOTcuODM3ODYwMTA3NDIxODggMTI1LjYyNTU0OTMxNjQwNjI1UTIzOS43MjUxNTg2OTE0MDYyNSA5MS41MDA3MzI0MjE4NzUgMzEwLjA0OTkyNjc1NzgxMjUgOTEuNTAwNzMyNDIxODc1UTM4MS4zNzQ2OTQ4MjQyMTg3NSA5MS41MDA3MzI0MjE4NzUgNDE3LjIzNzAzMDAyOTI5NjkgMTIwLjg2MzA2NzYyNjk1MzEyUTQ1My4wOTkzNjUyMzQzNzUgMTUwLjIyNTQwMjgzMjAzMTI1IDQ1My4wOTkzNjUyMzQzNzUgMTk1LjkwMDE0NjQ4NDM3NVE0NTMuMDk5MzY1MjM0Mzc1IDIyNy4xNzQ5ODc3OTI5Njg3NSA0MzUuODk5NDE0MDYyNSAyNDYuNDg3Mzk2MjQwMjM0MzhRNDE4LjY5OTQ2Mjg5MDYyNSAyNjUuNzk5ODA0Njg3NSAzODYuMzI0NTIzOTI1NzgxMjUgMjc3Ljk5OTc1NTg1OTM3NVEzNTMuOTQ5NTg0OTYwOTM3NSAyOTAuMTk5NzA3MDMxMjUgMzA4LjQyNDYyMTU4MjAzMTI1IDMwMC41NDk2ODI2MTcxODc1TDI3OC4yNTAxMjIwNzAzMTI1IDMwNy40NzQ1NDgzMzk4NDM3NVEyMDguODc0OTM4OTY0ODQzNzUgMzIzLjI5OTU2MDU0Njg3NSAxNTguNTEyMzU5NjE5MTQwNjIgMzQ3LjQ0OTU4NDk2MDkzNzVRMTA4LjE0OTc4MDI3MzQzNzUgMzcxLjU5OTYwOTM3NSA4MC45MTIyNjE5NjI4OTA2MiA0MTAuOTg3MTUyMDk5NjA5NFE1My42NzQ3NDM2NTIzNDM3NSA0NTAuMzc0Njk0ODI0MjE4NzUgNTMuNjc0NzQzNjUyMzQzNzUgNTEzLjE0OTc4MDI3MzQzNzVRNTMuNjc0NzQzNjUyMzQzNzUgNTc1LjkyNDg2NTcyMjY1NjIgODMuOTk5NzU1ODU5Mzc1IDYyMC44MTI0MDg0NDcyNjU2UTExNC4zMjQ3NjgwNjY0MDYyNSA2NjUuNjk5OTUxMTcxODc1IDE2OS4yMTIzMTA3OTEwMTU2MiA2ODkuODQ5OTc1NTg1OTM3NVEyMjQuMDk5ODUzNTE1NjI1IDcxNCAyOTguMDQ5OTI2NzU3ODEyNSA3MTRRMzcyIDcxNCA0MjkuOTc1MDM2NjIxMDkzNzUgNjg4Ljc2MjQ4MTY4OTQ1MzFRNDg3Ljk1MDA3MzI0MjE4NzUgNjYzLjUyNDk2MzM3ODkwNjIgNTIxLjI3NTA4NTQ0OTIxODggNjEzLjcyNDkxNDU1MDc4MTJRNTU0LjYwMDA5NzY1NjI1IDU2My45MjQ4NjU3MjI2NTYyIDU1NC42MDAwOTc2NTYyNSA0ODguOTc0NzkyNDgwNDY4NzVWNDU2SDQzNi4xNDkyOTE5OTIxODc1VjQ4OC45NzQ3OTI0ODA0Njg3NVE0MzYuMTQ5MjkxOTkyMTg3NSA1MzEuNTk5NjA5Mzc1IDQxOS4xNjE4OTU3NTE5NTMxIDU1Ny43NjE5OTM0MDgyMDMxUTQwMi4xNzQ0OTk1MTE3MTg3NSA1ODMuOTI0Mzc3NDQxNDA2MiAzNzEuMDc0NjQ1OTk2MDkzNzUgNTk2LjIxMTgyMjUwOTc2NTZRMzM5Ljk3NDc5MjQ4MDQ2ODc1IDYwOC40OTkyNjc1NzgxMjUgMjk4LjA0OTkyNjc1NzgxMjUgNjA4LjQ5OTI2NzU3ODEyNVEyMzUuNzc1MDg1NDQ5MjE4NzUgNjA4LjQ5OTI2NzU3ODEyNSAyMDMuOTUwMzE3MzgyODEyNSA1ODQuMDc0NDAxODU1NDY4OFExNzIuMTI1NTQ5MzE2NDA2MjUgNTU5LjY0OTUzNjEzMjgxMjUgMTcyLjEyNTU0OTMxNjQwNjI1IDUxNi40NDk4MjkxMDE1NjI1UTE3Mi4xMjU1NDkzMTY0MDYyNSA0ODcuNjUwMDI0NDE0MDYyNSAxODYuNjc1NDc2MDc0MjE4NzUgNDY4LjQyNTEwOTg2MzI4MTI1UTIwMS4yMjU0MDI4MzIwMzEyNSA0NDkuMjAwMTk1MzEyNSAyMjkuNzEyNzk5MDcyMjY1NjIgNDM2LjY3NTIzMTkzMzU5Mzc1UTI1OC4yMDAxOTUzMTI1IDQyNC4xNTAyNjg1NTQ2ODc1IDMwMS4yNTAxMjIwNzAzMTI1IDQxNC42MjUzMDUxNzU3ODEyNUwzMzEuNDI0NjIxNTgyMDMxMjUgNDA3LjcwMDQzOTQ1MzEyNVE0MDIuOTI0ODY1NzIyNjU2MjUgMzkyLjIyNTQwMjgzMjAzMTI1IDQ1Ni43NjI0ODE2ODk0NTMxIDM2Ny44Mzc4NjAxMDc0MjE5UTUxMC42MDAwOTc2NTYyNSAzNDMuNDUwMzE3MzgyODEyNSA1NDEuMDc1MTM0Mjc3MzQzOCAzMDMuMDYyNzc0NjU4MjAzMVE1NzEuNTUwMTcwODk4NDM3NSAyNjIuNjc1MjMxOTMzNTkzNzUgNTcxLjU1MDE3MDg5ODQzNzUgMTk5LjIwMDE5NTMxMjVRNTcxLjU1MDE3MDg5ODQzNzUgMTM1LjcyNTE1ODY5MTQwNjI1IDUzOS40MDAxNDY0ODQzNzUgODcuODM3NjE1OTY2Nzk2ODhRNTA3LjI1MDEyMjA3MDMxMjUgMzkuOTUwMDczMjQyMTg3NSA0NDguNTM3NTY3MTM4NjcxOSAxMi45NzUwMzY2MjEwOTM3NVEzODkuODI1MDEyMjA3MDMxMjUgLTE0IDMxMC4wNDk5MjY3NTc4MTI1IC0xNFoiLz4KPHBhdGggdHJhbnNmb3JtPSJ0cmFuc2xhdGUoNjY4LjAsMCkiIGQ9Ik0zMzIuMzQ5OTc1NTg1OTM3NSAtMTRRMjAzLjU3NDg5MDEzNjcxODc1IC0xNCAxMjguMDEyMzU5NjE5MTQwNjIgNTguNVE1Mi40NDk4MjkxMDE1NjI1IDEzMSA1Mi40NDk4MjkxMDE1NjI1IDI2Ni44NzQ5Mzg5NjQ4NDM3NVY0MzMuMTI1MDYxMDM1MTU2MjVRNTIuNDQ5ODI5MTAxNTYyNSA1NjkgMTI4LjAxMjM1OTYxOTE0MDYyIDY0MS41UTIwMy41NzQ4OTAxMzY3MTg3NSA3MTQgMzMyLjM0OTk3NTU4NTkzNzUgNzE0UTQ2MC4xMjUwNjEwMzUxNTYyNSA3MTQgNTI5LjU3NTEzNDI3NzM0MzggNjQzLjg0OTk3NTU4NTkzNzVRNTk5LjAyNTIwNzUxOTUzMTIgNTczLjY5OTk1MTE3MTg3NSA1OTkuMDI1MjA3NTE5NTMxMiA0NTEuNTc0ODkwMTM2NzE4NzVWNDQ1Ljc0OTg3NzkyOTY4NzVINDgwLjU3NDQwMTg1NTQ2ODc1VjQ1NS4yMjQ5MTQ1NTA3ODEyNVE0ODAuNTc0NDAxODU1NDY4NzUgNTIxLjQyNDYyMTU4MjAzMTIgNDQ0LjE0OTUzNjEzMjgxMjUgNTYzLjk2MTk0NDU4MDA3ODFRNDA3LjcyNDY3MDQxMDE1NjI1IDYwNi40OTkyNjc1NzgxMjUgMzMyLjM0OTk3NTU4NTkzNzUgNjA2LjQ5OTI2NzU3ODEyNVEyNTcuNjI1MzA1MTc1NzgxMjUgNjA2LjQ5OTI2NzU3ODEyNSAyMTUuMDg3OTgyMTc3NzM0MzggNTYwLjY5OTQ2Mjg5MDYyNVExNzIuNTUwNjU5MTc5Njg3NSA1MTQuODk5NjU4MjAzMTI1IDE3Mi41NTA2NTkxNzk2ODc1IDQzNS4xMjUwNjEwMzUxNTYyNVYyNjQuODc0OTM4OTY0ODQzNzVRMTcyLjU1MDY1OTE3OTY4NzUgMTg1LjkyNTM1NDAwMzkwNjI1IDIxNS4wODc5ODIxNzc3MzQzOCAxMzkuNzEzMDQzMjEyODkwNjJRMjU3LjYyNTMwNTE3NTc4MTI1IDkzLjUwMDczMjQyMTg3NSAzMzIuMzQ5OTc1NTg1OTM3NSA5My41MDA3MzI0MjE4NzVRNDA3LjcyNDY3MDQxMDE1NjI1IDkzLjUwMDczMjQyMTg3NSA0NDQuMTQ5NTM2MTMyODEyNSAxMzYuNDUwNTYxNTIzNDM3NVE0ODAuNTc0NDAxODU1NDY4NzUgMTc5LjQwMDM5MDYyNSA0ODAuNTc0NDAxODU1NDY4NzUgMjQ0Ljc3NTA4NTQ0OTIxODc1VjI2Mi4yNTAxMjIwNzAzMTI1SDU5OS4wMjUyMDc1MTk1MzEyVjI0OC40MjUxMDk4NjMyODEyNVE1OTkuMDI1MjA3NTE5NTMxMiAxMjYuMzAwMDQ4ODI4MTI1IDUyOS41NzUxMzQyNzczNDM4IDU2LjE1MDAyNDQxNDA2MjVRNDYwLjEyNTA2MTAzNTE1NjI1IC0xNCAzMzIuMzQ5OTc1NTg1OTM3NSAtMTRaIi8+CjxwYXRoIHRyYW5zZm9ybT0idHJhbnNsYXRlKDEzNzEuMCwwKSIgZD0iTTE5Ljc0OTg3NzkyOTY4NzUgMCAyMTEuNjI0MzI4NjEzMjgxMjUgNzAwSDQyMS4zMjU3NDQ2Mjg5MDYyNUw2MTMuMjAwMTk1MzEyNSAwSDQ4OS4yNzQzNTMwMjczNDM3NUw0NDcuNDI0NjIxNTgyMDMxMjUgMTU5LjU5OTYwOTM3NUgxODUuNTI1NDUxNjYwMTU2MjVMMTQzLjY3NTcyMDIxNDg0Mzc1IDBaTTIxNC4yNTA2MTAzNTE1NjI1IDI3MC40MDAzOTA2MjVINDE4LjY5OTQ2Mjg5MDYyNUwzMjQuOTUwMDczMjQyMTg3NSA2MjQuODc0NDUwNjgzNTkzOEgzMDhaIi8+CjxwYXRoIHRyYW5zZm9ybT0idHJhbnNsYXRlKDIwNjQuMCwwKSIgZD0iTTY5LjQ5OTc1NTg1OTM3NSAwVjcwMEgxODkuNjAwNTg1OTM3NVYwWiIvPgo8cGF0aCB0cmFuc2Zvcm09InRyYW5zbGF0ZSgyMzgzLjAsMCkiIGQ9Ik02OS40OTk3NTU4NTkzNzUgMFY3MDBIMzY4LjI1MDEyMjA3MDMxMjVRNDM0LjA3NTEzNDI3NzM0Mzc1IDcwMCA0ODMuMTYyNjI4MTczODI4MSA2NzcuMTc0OTg3NzkyOTY4OFE1MzIuMjUwMTIyMDcwMzEyNSA2NTQuMzQ5OTc1NTg1OTM3NSA1NTkuNTEyNjAzNzU5NzY1NiA2MTIuNDM3NDY5NDgyNDIxOVE1ODYuNzc1MDg1NDQ5MjE4OCA1NzAuNTI0OTYzMzc4OTA2MiA1ODYuNzc1MDg1NDQ5MjE4OCA1MTMuMTc0OTg3NzkyOTY4OFY1MDEuNTI0OTYzMzc4OTA2MjVRNTg2Ljc3NTA4NTQ0OTIxODggNDM3LjEyNTA2MTAzNTE1NjI1IDU1Ni4wNzUxMzQyNzczNDM4IDM5Ny44NjI1NzkzNDU3MDMxUTUyNS4zNzUxODMxMDU0Njg4IDM1OC42MDAwOTc2NTYyNSA0ODEuMDI1MjA3NTE5NTMxMjUgMzQxLjQ3NTAzNjYyMTA5Mzc1VjMyNC41MjQ5NjMzNzg5MDYyNVE1MjAuMTUwMjY4NTU0Njg3NSAzMjIuNjk5OTUxMTcxODc1IDU0Mi41MDAyNDQxNDA2MjUgMjk3Ljk4NzM5NjI0MDIzNDRRNTY0Ljg1MDIxOTcyNjU2MjUgMjczLjI3NDg0MTMwODU5Mzc1IDU2NC44NTAyMTk3MjY1NjI1IDIzMC41NzQ4OTAxMzY3MTg3NVYwSDQ0NC43NDkzODk2NDg0Mzc1VjIxMy42NzQ3NDM2NTIzNDM3NVE0NDQuNzQ5Mzg5NjQ4NDM3NSAyMzkuMDc0NjQ1OTk2MDkzNzUgNDMxLjM3NDQ1MDY4MzU5Mzc1IDI1NC40MjQ2MjE1ODIwMzEyNVE0MTcuOTk5NTExNzE4NzUgMjY5Ljc3NDU5NzE2Nzk2ODc1IDM4Ny45NDk1ODQ5NjA5Mzc1IDI2OS43NzQ1OTcxNjc5Njg3NUgxODkuNjAwNTg1OTM3NVYwWk0xODkuNjAwNTg1OTM3NSAzNzguOTI1MzU0MDAzOTA2MjVIMzU1LjY1MDAyNDQxNDA2MjVRNDA4LjA3NDY0NTk5NjA5Mzc1IDM3OC45MjUzNTQwMDM5MDYyNSA0MzcuMzc0NDUwNjgzNTkzNzUgNDA2LjM1MDIxOTcyNjU2MjVRNDY2LjY3NDI1NTM3MTA5Mzc1IDQzMy43NzUwODU0NDkyMTg3NSA0NjYuNjc0MjU1MzcxMDkzNzUgNDgwLjMyNDc2ODA2NjQwNjI1VjQ4OS40NDk4MjkxMDE1NjI1UTQ2Ni42NzQyNTUzNzEwOTM3NSA1MzUuOTk5NTExNzE4NzUgNDM3Ljk2MTk0NDU4MDA3ODEgNTYzLjQyNDM3NzQ0MTQwNjJRNDA5LjI0OTYzMzc4OTA2MjUgNTkwLjg0OTI0MzE2NDA2MjUgMzU1LjY1MDAyNDQxNDA2MjUgNTkwLjg0OTI0MzE2NDA2MjVIMTg5LjYwMDU4NTkzNzVaIi8+CjxwYXRoIHRyYW5zZm9ybT0idHJhbnNsYXRlKDMwNzUuMCwwKSIgZD0iTTI1MC4xOTk3MDcwMzEyNSAwVjI0Ny4yOTk1NjA1NDY4NzVMOS4zOTk5MDIzNDM3NSA3MDBIMTQzLjk3NTc2OTA0Mjk2ODc1TDMwMS43NzUwODU0NDkyMTg3NSAzOTEuMjUwNjEwMzUxNTYyNUgzMTguNzI1MTU4NjkxNDA2MjVMNDc2LjUyNDQ3NTA5NzY1NjI1IDcwMEg2MTEuMTAwMzQxNzk2ODc1TDM3MC4zMDA1MzcxMDkzNzUgMjQ3LjI5OTU2MDU0Njg3NVYwWiIvPgo8L2c+PC9zdmc+" width="520" height="156" alt="SCAIRY"><select id="language" aria-label="Language">
+<option value="en">English</option><option value="fr" lang="fr">Français</option><option value="de" lang="de">Deutsch</option><option value="es" lang="es">Español</option><option value="fi" lang="fi">Suomi</option>
+</select></div>
+<h1 id="title"></h1><p id="intro"></p>
+</header>
+<div id="steps" hidden></div>
+<form id="survey"></form>
+<p id="status" role="status" aria-live="polite"></p>
+<noscript>Enable JavaScript to use this survey.</noscript>
+</main>
+<script>
+// The Apps Script template supplies web-app configuration. Opening this file locally enables preview.
+const embedded = '<?!= configEncoded ?>';
+const config = embedded.startsWith('%') ? JSON.parse(decodeURIComponent(embedded)) : null;
+// The Pages build replaces this empty string with the deployed Apps Script URL.
+const pagesEndpoint = "https://script.google.com/macros/s/AKfycbxwlz2MsCFvgu0xpUbzqsKlq733CMkU1HFj0eS7iF2NCWGKUARDU-5sm4ZndT0WxETF/exec";
+const preview = config === null && !pagesEndpoint;
+const copy = {
+en: {
+title:'Urban Green Space Visitor Survey', intro:'SCAIRY studies urban green spaces across European cities. We want to understand why people visit them and how they experience them. We compare visitor ratings with soil and vegetation measurements. This survey takes about 3–4 minutes. Please answer about your visit today to {site}.',
+language:'Survey language', privacy:'Participation and privacy', voluntary:'Taking part is voluntary. You can skip any survey question and stop before submitting. We do not ask for your name or contact details. Please avoid including details that could identify anyone in your written answers.',
+notice:'Participant information and privacy notice', consent:'I confirm that I am 18 or older, have read the participant information, and agree to take part.',
+about:'About you', visit:'Your visit today', impressions:'Your impressions', plants:'Plants and your visit', choose:'Select an answer',
+yes:'Yes', no:'No', unsure:'Not sure', decline:'Prefer not to say',
+age:'What is your age group?', residence:'Where do you usually live?', local:'In {city}', country:'Elsewhere in this country', abroad:'In another country',
+visited:'Have you spent time in or walked through this green space today?', frequency:'How often do you visit this green space?', visits:['This is my first visit','Less than once a month','One to three times a month','At least once a week'],
+reason:'What brought you here today? If you chose to visit, what made you choose this place in particular?', satisfaction:'Overall, how satisfied were you with your visit today?', satisfactionOptions:['Very dissatisfied','Somewhat dissatisfied','Neither satisfied nor dissatisfied','Somewhat satisfied','Very satisfied'],
+experience:'What, if anything, made your experience here better or worse today?',
+health:'How healthy did the plants here look to you today?', lush:'How lush did the vegetation here look to you today?', variety:'How varied did the plant life here seem to you today?', appeal:'How attractive did you find this green space today?',
+scale:['Not at all','Slightly','Moderately','Very','Extremely'],
+influence:'How much did the trees and other plants here influence your decision to come today?', influenceOptions:['Not at all','A little','A moderate amount','A lot','I did not choose to come here today'],
+plantReason:'What about the trees or other plants mattered to your decision?', submit:'Submit responses', submitting:'Saving your responses…', thanks:'Thank you for sharing your experience with us.', closed:'Thank you for your time. No answers have been submitted.', failure:'Your answers could not be saved. Please try again.', preview:'Preview only. Answers will not be saved.', unavailable:'This survey link is unavailable. Please ask the study team for the survey link.', previewDone:'Preview complete. No answers were saved.', example:'Example green space', exampleCity:'Example city'
+},
+fr: {
+title:'Enquête auprès des visiteurs des espaces verts urbains', intro:'SCAIRY étudie les espaces verts de plusieurs villes européennes. Nous cherchons à comprendre pourquoi les gens les fréquentent et comment ils les perçoivent. Nous comparons leurs évaluations à des mesures du sol et de la végétation. Le questionnaire dure environ 3 à 4 minutes. Répondez en pensant à votre visite d’aujourd’hui à {site}.',
+language:'Langue du questionnaire', privacy:'Participation et confidentialité', voluntary:'Votre participation est volontaire. Vous pouvez passer une question et vous arrêter avant l’envoi. Nous ne demandons ni votre nom ni vos coordonnées. Évitez de donner des détails permettant d’identifier qui que ce soit dans vos réponses écrites.',
+notice:'Information aux participants et protection des données', consent:'Je confirme avoir 18 ans ou plus, avoir lu les informations destinées aux participants et accepter de participer.',
+about:'À propos de vous', visit:'Votre visite aujourd’hui', impressions:'Vos impressions', plants:'La végétation et votre visite', choose:'Choisissez une réponse',
+yes:'Oui', no:'Non', unsure:'Je ne sais pas', decline:'Je préfère ne pas répondre',
+age:'Dans quelle tranche d’âge vous situez-vous ?', residence:'Où habitez-vous habituellement ?', local:'Dans cette ville ({city})', country:'Ailleurs dans ce pays', abroad:'Dans un autre pays',
+visited:'Avez-vous passé du temps dans cet espace vert ou l’avez-vous traversé aujourd’hui ?', frequency:'À quelle fréquence venez-vous dans cet espace vert ?', visits:['C’est ma première visite','Moins d’une fois par mois','Une à trois fois par mois','Au moins une fois par semaine'],
+reason:'Qu’est-ce qui vous a amené ici aujourd’hui ? Si vous avez choisi de venir, pourquoi avoir choisi cet endroit en particulier ?', satisfaction:'Dans l’ensemble, dans quelle mesure êtes-vous satisfait de votre visite aujourd’hui ?', satisfactionOptions:['Très insatisfait','Plutôt insatisfait','Ni satisfait ni insatisfait','Plutôt satisfait','Très satisfait'],
+experience:'Qu’est-ce qui, le cas échéant, a rendu votre visite plus ou moins agréable aujourd’hui ?',
+health:'Les plantes vous ont-elles paru en bonne santé aujourd’hui ?', lush:'La végétation vous a-t-elle paru luxuriante aujourd’hui ?', variety:'La végétation vous a-t-elle paru diversifiée aujourd’hui ?', appeal:'Avez-vous trouvé cet espace vert attrayant aujourd’hui ?',
+scale:['Pas du tout','Un peu','Modérément','Très','Extrêmement'],
+influence:'Dans quelle mesure les arbres et les autres plantes ont-ils influencé votre décision de venir ici aujourd’hui ?', influenceOptions:['Pas du tout','Un peu','Modérément','Beaucoup','Je n’ai pas choisi de venir ici aujourd’hui'],
+plantReason:'Qu’est-ce qui, dans les arbres ou les autres plantes de cet endroit, a compté dans votre décision ?', submit:'Envoyer les réponses', submitting:'Enregistrement de vos réponses…', thanks:'Merci de nous avoir fait part de votre expérience.', closed:'Merci pour votre temps. Aucune réponse n’a été envoyée.', failure:'Vos réponses n’ont pas pu être enregistrées. Veuillez réessayer.', preview:'Aperçu uniquement. Les réponses ne seront pas enregistrées.', unavailable:'Ce lien est indisponible. Demandez le lien du questionnaire à l’équipe de recherche.', previewDone:'Aperçu terminé. Aucune réponse n’a été enregistrée.', example:'cet espace vert fictif', exampleCity:'ville fictive'
+},
+de: {
+title:'Befragung zum Besuch städtischer Grünflächen', intro:'SCAIRY untersucht städtische Grünflächen in verschiedenen europäischen Städten. Wir möchten verstehen, warum Menschen diese Orte besuchen und wie sie sie erleben. Wir vergleichen die Bewertungen mit Boden- und Vegetationsmessungen. Die Befragung dauert etwa 3–4 Minuten. Beziehen Sie Ihre Antworten auf Ihren heutigen Besuch an diesem Ort: {site}.',
+language:'Sprache des Fragebogens', privacy:'Teilnahme und Datenschutz', voluntary:'Die Teilnahme ist freiwillig. Sie können Fragen auslassen und vor dem Absenden jederzeit aufhören. Wir fragen weder nach Ihrem Namen noch nach Ihren Kontaktdaten. Bitte nennen Sie in Freitextantworten keine Angaben, durch die Personen identifiziert werden könnten.',
+notice:'Teilnahmeinformationen und Datenschutzhinweise', consent:'Ich bestätige, dass ich mindestens 18 Jahre alt bin, die Teilnahmeinformationen gelesen habe und der Teilnahme zustimme.',
+about:'Über Sie', visit:'Ihr heutiger Besuch', impressions:'Ihre Eindrücke', plants:'Pflanzen und Ihr Besuch', choose:'Bitte auswählen',
+yes:'Ja', no:'Nein', unsure:'Weiß nicht', decline:'Keine Angabe',
+age:'Zu welcher Altersgruppe gehören Sie?', residence:'Wo wohnen Sie normalerweise?', local:'In dieser Stadt ({city})', country:'Anderswo in diesem Land', abroad:'In einem anderen Land',
+visited:'Haben Sie sich heute auf dieser Grünfläche aufgehalten oder sind Sie durch sie hindurchgegangen?', frequency:'Wie oft besuchen Sie diese Grünfläche?', visits:['Das ist mein erster Besuch','Seltener als einmal im Monat','Ein- bis dreimal im Monat','Mindestens einmal pro Woche'],
+reason:'Was hat Sie heute hierhergeführt? Falls Sie sich bewusst für einen Besuch entschieden haben, warum gerade hier?', satisfaction:'Wie zufrieden waren Sie insgesamt mit Ihrem heutigen Besuch?', satisfactionOptions:['Sehr unzufrieden','Eher unzufrieden','Weder zufrieden noch unzufrieden','Eher zufrieden','Sehr zufrieden'],
+experience:'Was hat Ihren heutigen Besuch hier angenehmer oder weniger angenehm gemacht, falls Ihnen etwas einfällt?',
+health:'Wie gesund sahen die Pflanzen hier heute für Sie aus?', lush:'Wie üppig wirkte die Vegetation hier heute auf Sie?', variety:'Wie vielfältig erschienen Ihnen die Pflanzen hier heute?', appeal:'Wie attraktiv fanden Sie diese Grünfläche heute?',
+scale:['Überhaupt nicht','Etwas','Mäßig','Sehr','Äußerst'],
+influence:'Wie sehr haben die Bäume und anderen Pflanzen hier Ihre Entscheidung beeinflusst, heute hierherzukommen?', influenceOptions:['Überhaupt nicht','Ein wenig','Mäßig','Stark','Ich habe mich heute nicht bewusst für diesen Ort entschieden'],
+plantReason:'Was an den Bäumen oder anderen Pflanzen spielte für Ihre Entscheidung eine Rolle?', submit:'Antworten absenden', submitting:'Ihre Antworten werden gespeichert…', thanks:'Vielen Dank, dass Sie Ihre Erfahrungen mit uns geteilt haben.', closed:'Vielen Dank für Ihre Zeit. Es wurden keine Antworten gesendet.', failure:'Ihre Antworten konnten nicht gespeichert werden. Bitte versuchen Sie es erneut.', preview:'Nur Vorschau. Antworten werden nicht gespeichert.', unavailable:'Dieser Link ist nicht verfügbar. Bitte fragen Sie das Forschungsteam nach dem Befragungslink.', previewDone:'Vorschau abgeschlossen. Es wurden keine Antworten gespeichert.', example:'Beispiel-Grünfläche', exampleCity:'Beispielstadt'
+},
+es: {
+title:'Encuesta a visitantes de espacios verdes urbanos', intro:'SCAIRY estudia los espacios verdes de varias ciudades europeas. Queremos entender por qué la gente los visita y cómo los percibe. Comparamos las valoraciones de los visitantes con mediciones del suelo y de la vegetación. La encuesta dura unos 3–4 minutos. Responda pensando en su visita de hoy a {site}.',
+language:'Idioma de la encuesta', privacy:'Participación y privacidad', voluntary:'Participar es voluntario. Puede omitir preguntas y dejar la encuesta antes de enviarla. No le pedimos su nombre ni sus datos de contacto. Evite incluir en sus respuestas escritas detalles que puedan identificar a alguien.',
+notice:'Información para participantes y aviso de privacidad', consent:'Confirmo que tengo 18 años o más, que he leído la información para participantes y que acepto participar.',
+about:'Sobre usted', visit:'Su visita de hoy', impressions:'Sus impresiones', plants:'Las plantas y su visita', choose:'Seleccione una respuesta',
+yes:'Sí', no:'No', unsure:'No lo sé', decline:'Prefiero no responder',
+age:'¿En qué grupo de edad se encuentra?', residence:'¿Dónde vive habitualmente?', local:'En esta ciudad ({city})', country:'En otro lugar de este país', abroad:'En otro país',
+visited:'¿Ha pasado tiempo en este espacio verde o lo ha atravesado hoy?', frequency:'¿Con qué frecuencia visita este espacio verde?', visits:['Es mi primera visita','Menos de una vez al mes','De una a tres veces al mes','Al menos una vez por semana'],
+reason:'¿Qué le ha traído aquí hoy? Si decidió venir, ¿por qué eligió este lugar en particular?', satisfaction:'En general, ¿cuál fue su nivel de satisfacción con la visita de hoy?', satisfactionOptions:['Muy bajo','Más bien bajo','Ni alto ni bajo','Más bien alto','Muy alto'],
+experience:'¿Qué hizo que su experiencia aquí fuera mejor o peor hoy, si hubo algo?',
+health:'¿Qué tan saludables le parecieron las plantas de este lugar hoy?', lush:'¿Qué tan frondosa le pareció la vegetación de este lugar hoy?', variety:'¿Qué tan variadas le parecieron las plantas de este lugar hoy?', appeal:'¿Qué tan atractivo le pareció este espacio verde hoy?',
+scale:['Nada','Un poco','Moderadamente','Muy','Extremadamente'],
+influence:'¿Cuánto influyeron los árboles y las demás plantas de este lugar en su decisión de venir hoy?', influenceOptions:['Nada','Un poco','Moderadamente','Mucho','No elegí venir aquí hoy'],
+plantReason:'¿Qué aspectos de los árboles o de las demás plantas influyeron en su decisión?', submit:'Enviar respuestas', submitting:'Guardando sus respuestas…', thanks:'Gracias por compartir su experiencia con nosotros.', closed:'Gracias por su tiempo. No se ha enviado ninguna respuesta.', failure:'No se pudieron guardar sus respuestas. Inténtelo de nuevo.', preview:'Solo vista previa. Las respuestas no se guardarán.', unavailable:'Este enlace no está disponible. Solicite al equipo de investigación el enlace a la encuesta.', previewDone:'Vista previa finalizada. No se ha guardado ninguna respuesta.', example:'este espacio verde de ejemplo', exampleCity:'ciudad de ejemplo'
+},
+fi: {
+title:'Kaupunkien viheralueiden kävijäkysely', intro:'SCAIRY tutkii kaupunkien viheralueita eri puolilla Eurooppaa. Haluamme selvittää, miksi ihmiset käyvät näillä alueilla ja miten he ne kokevat. Vertaamme kävijöiden arvioita maaperän ja kasvillisuuden mittauksiin. Vastaaminen kestää noin 3–4 minuuttia. Vastaa tämänpäiväisen käyntisi perusteella. Tutkittava viheralue on {site}.',
+language:'Kyselyn kieli', privacy:'Osallistuminen ja tietosuoja', voluntary:'Osallistuminen on vapaaehtoista. Voit jättää kysymyksiä väliin tai keskeyttää ennen vastausten lähettämistä. Emme kysy nimeäsi tai yhteystietojasi. Älä kirjoita vastauksiisi tietoja, joista sinut tai jonkun muun voisi tunnistaa.',
+notice:'Tutkittavan tiedote ja tietosuojailmoitus', consent:'Vahvistan, että olen vähintään 18-vuotias, olen lukenut tutkittavan tiedotteen ja suostun osallistumaan.',
+about:'Taustatiedot', visit:'Tämänpäiväinen käyntisi', impressions:'Vaikutelmasi', plants:'Kasvillisuus ja käyntisi', choose:'Valitse vastaus',
+yes:'Kyllä', no:'Ei', unsure:'En osaa sanoa', decline:'En halua vastata',
+age:'Mihin ikäryhmään kuulut?', residence:'Missä yleensä asut?', local:'Tässä kaupungissa ({city})', country:'Muualla tässä maassa', abroad:'Toisessa maassa',
+visited:'Oletko tänään viettänyt aikaa tällä viheralueella tai kulkenut sen läpi?', frequency:'Kuinka usein käyt tällä viheralueella?', visits:['Tämä on ensimmäinen käyntini','Harvemmin kuin kerran kuukaudessa','1–3 kertaa kuukaudessa','Vähintään kerran viikossa'],
+reason:'Mikä toi sinut tänne tänään? Jos valitsit tämän paikan, miksi tulit juuri tänne?', satisfaction:'Kuinka tyytyväinen olit kaiken kaikkiaan tämänpäiväiseen käyntiisi?', satisfactionOptions:['Erittäin tyytymätön','Melko tyytymätön','En tyytyväinen enkä tyytymätön','Melko tyytyväinen','Erittäin tyytyväinen'],
+experience:'Mikä teki käynnistäsi tänään miellyttävämmän tai vähemmän miellyttävän, jos jokin?',
+health:'Kuinka terveiltä alueen kasvit näyttivät tänään?', lush:'Kuinka rehevältä alueen kasvillisuus näytti tänään?', variety:'Kuinka monipuoliselta alueen kasvillisuus vaikutti tänään?', appeal:'Kuinka viehättävänä pidit tätä viheraluetta tänään?',
+scale:['Ei lainkaan','Hieman','Kohtalaisesti','Hyvin','Erittäin'],
+influence:'Kuinka paljon alueen puut ja muut kasvit vaikuttivat päätökseesi tulla tänne tänään?', influenceOptions:['Ei lainkaan','Hieman','Kohtalaisesti','Paljon','En itse valinnut tulla tänne tänään'],
+plantReason:'Mikä puissa tai muissa kasveissa vaikutti päätökseesi?', submit:'Lähetä vastaukset', submitting:'Vastauksia tallennetaan…', thanks:'Kiitos, että kerroit kokemuksestasi.', closed:'Kiitos ajastasi. Vastauksia ei lähetetty.', failure:'Vastauksia ei voitu tallentaa. Yritä uudelleen.', preview:'Esikatselu. Vastauksia ei tallenneta.', unavailable:'Tämä linkki ei ole käytettävissä. Pyydä kyselyn linkki tutkimusryhmältä.', previewDone:'Esikatselu valmis. Vastauksia ei tallennettu.', example:'esimerkkiviheralue', exampleCity:'esimerkkikaupunki'
+}
+};
+const form = document.getElementById('survey');
+const picker = document.getElementById('language');
+const status = document.getElementById('status');
+const steps = document.getElementById('steps');
+const header = document.getElementById('survey-header');
+const answers = {};
+const demoSites = {
+  'kuopio-01': {city:'Kuopio'}, 'paris-01': {city:'Paris'}, 'essex-01': {city:'Essex'},
+  'bremen-01': {city:'Bremen'}, 'madrid-01': {city:'Madrid'}
+};
+const sites = config?.sites || demoSites;
+const nav = {
+  en: ['Where are you taking this survey today?', 'Next', 'Back', 'In the study area ({city})', 'Please select a location and confirm your consent to continue.', 'Answer each question using the scale shown.', 'Please confirm you visited this green space today.'],
+  fr: ['Où répondez-vous à ce questionnaire aujourd’hui ?', 'Suivant', 'Retour', 'Dans la zone d’étude ({city})', 'Sélectionnez un lieu et confirmez votre accord pour continuer.', 'Répondez à chaque question à l’aide de l’échelle indiquée.', 'Confirmez que vous avez visité cet espace vert aujourd’hui.'],
+  de: ['Wo beantworten Sie heute diesen Fragebogen?', 'Weiter', 'Zurück', 'Im Untersuchungsgebiet ({city})', 'Wählen Sie einen Ort aus und bestätigen Sie Ihre Teilnahme.', 'Bitte beantworten Sie jede Frage anhand der angegebenen Skala.', 'Bitte bestätigen Sie, dass Sie diese Grünfläche heute besucht haben.'],
+  es: ['¿Dónde responde a esta encuesta hoy?', 'Siguiente', 'Atrás', 'En la zona de estudio ({city})', 'Seleccione un lugar y confirme su consentimiento para continuar.', 'Responda a cada pregunta con la escala indicada.', 'Confirme que ha visitado este espacio verde hoy.'],
+  fi: ['Missä vastaat kyselyyn tänään?', 'Seuraava', 'Takaisin', 'Tutkimusalueella ({city})', 'Valitse paikka ja vahvista suostumuksesi jatkaaksesi.', 'Vastaa kuhunkin kysymykseen annetulla asteikolla.', 'Vahvista, että kävit tällä viheralueella tänään.']
+};
+let stage = 0;
+const params = new URLSearchParams(location.search);
+const requestedSite = params.get('site');
+let selectedSite = config?.selectedSite || (pagesEndpoint && Object.hasOwn(sites, requestedSite) ? requestedSite : '');
+let busy = false;
+let complete = false;
+let result = '';
+let submissionId;
+const requestedLanguage = params.get('lang');
+picker.value = config?.language || (pagesEndpoint && Object.hasOwn(copy, requestedLanguage) ? requestedLanguage : 'en');
+const text = () => copy[picker.value];
+function populate(value) {
+  const site = sites[selectedSite];
+  return value.replace(/\{(site|city)\}/g, (_, key) =>
+    (key === 'site' ? site?.name || site?.city : site?.city) ||
+    (key === 'site' ? text().example : text().exampleCity));
+}
+function el(tag, content, parent) {
+  const element = document.createElement(tag);
+  if (content) element.textContent = content;
+  parent.append(element);
+  return element;
+}
+function section(title) {
+  const group = el('section', '', form);
+  if (title) el('h2', title, group);
+  return group;
+}
+function option(parent, key, code, title) {
+  const label = el('label', '', parent);
+  label.className = 'option';
+  const input = el('input', '', label);
+  input.type = 'radio';
+  input.name = key;
+  input.value = code;
+  input.checked = (key === 'site' ? selectedSite : answers[key]) === code;
+  el('span', title, label);
+  return input;
+}
+function field(parent, key, title, options) {
+  if (options) {
+    const group = el('fieldset', '', parent);
+    el('legend', title, group);
+    const choices = el('div', '', group);
+    choices.className = 'choices';
+    options.forEach(([code, name]) => option(choices, key, code, name));
+    return;
+  }
+  const group = el('div', '', parent);
+  group.className = 'field';
+  el('label', title, group).htmlFor = key;
+  const input = el('textarea', '', group);
+  input.id = key;
+  input.name = key;
+  input.maxLength = 1500;
+  input.value = answers[key] || '';
+}
+const numbered = labels => labels.map((name, index) => [String(index + 1), name]);
+const mobile = matchMedia('(max-width:42rem)');
+function matrix(parent, t) {
+  const columns = [...numbered(t.scale), ['unsure', t.unsure]];
+  const metrics = ['health','lush','variety','appeal'];
+  if (mobile.matches) {
+    const grid = el('div', '', parent);
+    grid.className = 'matrix-mobile';
+    metrics.forEach(key => field(grid, key, t[key], columns));
+    return;
+  }
+  const wrapper = el('div', '', parent);
+  wrapper.className = 'matrix-wrap matrix-desktop';
+  const table = el('table', '', wrapper);
+  table.className = 'matrix';
+  table.setAttribute('aria-label', t.impressions);
+  const headings = el('tr', '', el('thead', '', table));
+  el('td', '', headings);
+  columns.forEach(([, title]) => { el('th', title, headings).scope = 'col'; });
+  const body = el('tbody', '', table);
+  metrics.forEach(key => {
+    const row = el('tr', '', body);
+    el('th', t[key], row).scope = 'row';
+    columns.forEach(([code, title]) => {
+      const label = el('label', '', el('td', '', row));
+      const input = el('input', '', label);
+      input.type = 'radio';
+      input.name = key;
+      input.value = code;
+      input.checked = answers[key] === code;
+      input.setAttribute('aria-label', t[key] + ' ' + title);
+    });
+  });
+}
+function render() {
+  const t = text();
+  const [where, next, back, local, consentNeeded, instructions, visitNeeded] = nav[picker.value];
+  document.documentElement.lang = picker.value;
+  document.title = t.title + ' | SCAIRY';
+  picker.setAttribute('aria-label', t.language);
+  document.getElementById('title').textContent = t.title;
+  document.getElementById('intro').textContent = selectedSite ? populate(t.intro) :
+    t.intro.split(/(?<=\.) /).slice(0, -1).join(' ');
+  form.replaceChildren();
+  steps.replaceChildren();
+  steps.hidden = complete || !Object.keys(sites).length;
+  header.classList.toggle('compact', stage > 0);
+  status.dataset.state = result;
+  if (!steps.hidden) {
+    const labels = [t.privacy, t.visit, t.impressions];
+    labels.forEach((label, index) => {
+      const step = el('span', label, steps);
+      step.className = index < stage ? 'step past' : 'step';
+      if (index === stage) step.setAttribute('aria-current', 'step');
+    });
+  }
+  if (complete || !Object.keys(sites).length) {
+    status.textContent = t[result || 'unavailable'];
+    return;
+  }
+  status.textContent = t[result] || (preview ? t.preview : '');
+  const yesNo = [['yes', t.yes], ['no', t.no]];
+  const unsure = ['unsure', t.unsure];
+  if (stage === 0) {
+    const location = section();
+    field(location, 'site', where, Object.entries(sites).map(([key, site]) =>
+      [key, site.name ? site.city + ' · ' + site.name : site.city]));
+    const privacy = section(t.privacy);
+    el('p', t.voluntary, privacy);
+    if (selectedSite) {
+      const label = el('label', '', privacy);
+      label.className = 'option check';
+      const checkbox = el('input', '', label);
+      checkbox.type = 'checkbox';
+      checkbox.name = 'consent';
+      checkbox.checked = answers.consent === 'yes';
+      el('span', t.consent, label);
+    }
+  } else if (stage === 1) {
+    const about = section(t.about);
+    const ages = ['18-24','25-34','35-44','45-54','55-64','65+'];
+    field(about, 'age', t.age, [...ages.map(age => [age, age.replace('-', '–')]), ['decline', t.decline]]);
+    field(about, 'residence', t.residence, [['city', populate(local)], ['country', t.country], ['abroad', t.abroad], ['decline', t.decline]]);
+    const visit = section(t.visit);
+    field(visit, 'visited', t.visited, [...yesNo, unsure]);
+    if (answers.visited === 'yes') {
+      field(visit, 'frequency', t.frequency, [...numbered(t.visits), unsure]);
+      field(visit, 'reason', t.reason);
+      field(visit, 'satisfaction', t.satisfaction, [...numbered(t.satisfactionOptions), unsure]);
+      field(visit, 'experience', t.experience);
+    } else if (answers.visited) {
+      status.textContent = t.closed;
+    }
+  } else {
+    const impressions = section(t.impressions);
+    el('p', instructions, impressions);
+    matrix(impressions, t);
+    const plants = section(t.plants);
+    field(plants, 'influence', t.influence, [...numbered(t.influenceOptions.slice(0,4)), ['no_choice', t.influenceOptions[4]], unsure]);
+    if (['2','3','4'].includes(answers.influence)) field(plants, 'plantReason', t.plantReason);
+  }
+  const actions = el('div', '', form);
+  actions.className = 'actions';
+  if (stage > 0) {
+    const button = el('button', back, actions);
+    button.type = 'button';
+    button.className = 'back';
+    button.addEventListener('click', () => changeStage(stage - 1));
+  }
+  const button = el('button', stage < 2 ? next : t.submit, actions);
+  button.type = stage === 2 ? 'submit' : 'button';
+  if (stage < 2) button.addEventListener('click', () => {
+    if (stage === 0 && (!selectedSite || answers.consent !== 'yes')) {
+      status.textContent = consentNeeded;
+      form.querySelector(selectedSite ? '[name="consent"]' : '[name="site"]')?.focus();
+      return;
+    }
+    if (stage === 1 && answers.visited !== 'yes') {
+      status.textContent = visitNeeded;
+      form.querySelector('[name="visited"]')?.focus();
+      return;
+    }
+    changeStage(stage + 1);
+  });
+}
+function changeStage(nextStage) {
+  stage = nextStage;
+  render();
+  const heading = form.querySelector('h2');
+  heading.tabIndex = -1;
+  heading.focus();
+  window.scrollTo(0, 0);
+}
+picker.addEventListener('change', render);
+mobile.addEventListener('change', () => { if (stage === 2 && !busy && !complete) render(); });
+form.addEventListener('input', event => {
+  const {name, value, checked, type} = event.target;
+  if (name && name !== 'site') answers[name] = type === 'checkbox' ? (checked ? 'yes' : '') : value;
+});
+form.addEventListener('change', event => {
+  const {name, value} = event.target;
+  if (name === 'site' && selectedSite !== value) {
+    selectedSite = value;
+    for (const key of Object.keys(answers)) delete answers[key];
+    submissionId = undefined;
+  } else if (name === 'influence' && !['2','3','4'].includes(value)) {
+    delete answers.plantReason;
+  }
+  if (['site','visited','influence'].includes(name)) {
+    render();
+    form.querySelector('[name="' + name + '"]:checked')?.focus();
+  }
+});
+form.addEventListener('submit', event => {
+  event.preventDefault();
+  if (stage !== 2 || busy || complete || answers.consent !== 'yes' || answers.visited !== 'yes') return;
+  if (preview) {
+    complete = true;
+    result = 'previewDone';
+    render();
+    return;
+  }
+  submissionId ||= crypto.randomUUID();
+  busy = true;
+  picker.disabled = true;
+  form.querySelectorAll('input,textarea,button').forEach(input => { input.disabled = true; });
+  status.textContent = text().submitting;
+  const success = () => {
+    busy = false;
+    picker.disabled = false;
+    complete = true;
+    result = 'thanks';
+    render();
+  };
+  const failure = () => {
+    busy = false;
+    picker.disabled = false;
+    result = 'failure';
+    render();
+    form.querySelector('button')?.focus();
+  };
+  const payload = { ...answers, site: selectedSite, locale: picker.value, id: submissionId };
+  if (pagesEndpoint) {
+    submitFromPages(payload).then(success, failure);
+  } else {
+    google.script.run.withSuccessHandler(success).withFailureHandler(failure).saveResponse(payload);
+  }
+});
+// A cross-origin form POST keeps the Google page in a hidden frame. Success is
+// shown only when the Apps Script response sends back this attempt's nonce.
+function submitFromPages(payload) {
+  return new Promise((resolve, reject) => {
+    const nonce = crypto.randomUUID();
+    const frame = el('iframe', '', document.body);
+    frame.hidden = true;
+    frame.name = 'scairy-' + nonce;
+    frame.title = 'SCAIRY response delivery';
+    const post = el('form', '', document.body);
+    post.hidden = true;
+    post.method = 'POST';
+    post.action = pagesEndpoint;
+    post.target = frame.name;
+    const body = el('input', '', post);
+    body.type = 'hidden';
+    body.name = 'submission';
+    body.value = JSON.stringify({nonce, payload});
+    const timeout = setTimeout(() => finish(false), 45000);
+    function finish(ok) {
+      clearTimeout(timeout);
+      window.removeEventListener('message', receive);
+      post.remove();
+      frame.remove();
+      if (ok) resolve();
+      else reject(new Error('Unable to confirm response delivery.'));
+    }
+    function receive(event) {
+      if (!event.origin.startsWith('https://')) return;
+      const origin = new URL(event.origin);
+      if (origin.protocol !== 'https:' || (
+        origin.hostname !== 'script.google.com' &&
+        !origin.hostname.endsWith('-script.googleusercontent.com') &&
+        origin.hostname !== 'script.googleusercontent.com'
+      )) return;
+      const data = event.data;
+      if (data?.type === 'scairy:submission' && data.nonce === nonce) finish(data.ok === true);
+    }
+    window.addEventListener('message', receive);
+    post.submit();
+  });
+}
+
+render();
+</script>
+</body>
+</html>
