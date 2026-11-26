@@ -3,7 +3,6 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<base target="_top">
 <title>SCAIRY</title>
 <meta name="theme-color" content="#0F2A3A">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiI+PHJlY3Qgd2lkdGg9IjIwMCIgaGVpZ2h0PSIyMDAiIGZpbGw9IiMwRjJBM0EiLz48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgwLC04KSI+PGRlZnM+PGNsaXBQYXRoIGlkPSJ1aWRhcmsiPjxwb2x5Z29uIHBvaW50cz0iMzYsMTA0IDE2NCwxMDQgMTQ2LDE1MCAxMDQsMTc2IDYwLDE1MiIvPjwvY2xpcFBhdGg+PC9kZWZzPgo8cG9seWdvbiBwb2ludHM9IjY2LDk4IDk2LDQwIDExMCw2MiAxMjAsNTIgMTM4LDk4IiBmaWxsPSIjRjRGNUYyIi8+CjxyZWN0IHg9IjIwIiB5PSI5OSIgd2lkdGg9IjE2MCIgaGVpZ2h0PSIzIiByeD0iMS41IiBmaWxsPSIjNkNDM0NGIi8+CjxnIGNsaXAtcGF0aD0idXJsKCN1aWRhcmspIiBmaWxsPSIjNkNDM0NGIj4KPHJlY3QgeD0iMzAiIHk9IjEwOCIgd2lkdGg9IjE0MCIgaGVpZ2h0PSI2Ii8+PHJlY3QgeD0iMzAiIHk9IjEyMCIgd2lkdGg9IjExMiIgaGVpZ2h0PSI2Ii8+PHJlY3QgeD0iMzAiIHk9IjEzMiIgd2lkdGg9IjE0MCIgaGVpZ2h0PSI2Ii8+PHJlY3QgeD0iMzAiIHk9IjE0NCIgd2lkdGg9Ijk2IiBoZWlnaHQ9IjYiLz48cmVjdCB4PSIzMCIgeT0iMTU2IiB3aWR0aD0iMTQwIiBoZWlnaHQ9IjYiLz48cmVjdCB4PSIzMCIgeT0iMTY4IiB3aWR0aD0iMTIwIiBoZWlnaHQ9IjYiLz4KPC9nPjwvZz48L3N2Zz4=">
@@ -161,7 +160,25 @@ button.back { background: var(--paper); color: var(--action); border-color: #A6C
 button.back:hover { background: #E5F0F2; }
 :focus-visible { outline: 3px solid #176887; outline-offset: 3px; }
 #status { min-height: 1.5em; color: #435B65; }
-#status[data-state="thanks"] { color: var(--ink); font-weight: 750; font-size: 1.2rem; }
+.completion {
+  margin-top: 1.25rem;
+  border-top: .28rem solid var(--action);
+  padding-block: clamp(1.5rem, 6vw, 3rem);
+}
+.completion h2 { font-size: clamp(1.35rem, 4vw, 2rem); margin-bottom: .55rem; }
+.completion p { margin-bottom: 0; }
+.completion-mark {
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  margin-bottom: 1rem;
+  background: #DEF2F4;
+  color: var(--action);
+  font-size: 1.35rem;
+  font-weight: 800;
+}
 .matrix-wrap { overflow-x: auto; }
 .matrix { border-collapse: collapse; width: 100%; table-layout: fixed; }
 .matrix th, .matrix td { padding: .65rem .3rem; border-bottom: 1px solid var(--line); text-align: center; }
@@ -300,6 +317,13 @@ const nav = {
   es: ['¿Dónde responde a esta encuesta hoy?', 'Siguiente', 'Atrás', 'En la zona de estudio ({city})', 'Seleccione un lugar y confirme su consentimiento para continuar.', 'Responda a cada pregunta con la escala indicada.', 'Confirme que ha visitado este espacio verde hoy.'],
   fi: ['Missä vastaat kyselyyn tänään?', 'Seuraava', 'Takaisin', 'Tutkimusalueella ({city})', 'Valitse paikka ja vahvista suostumuksesi jatkaaksesi.', 'Vastaa kuhunkin kysymykseen annetulla asteikolla.', 'Vahvista, että kävit tällä viheralueella tänään.']
 };
+const savedMessage = {
+  en: 'Your responses have been saved.',
+  fr: 'Vos réponses ont été enregistrées.',
+  de: 'Ihre Antworten wurden gespeichert.',
+  es: 'Se han guardado sus respuestas.',
+  fi: 'Vastauksesi on tallennettu.'
+};
 let stage = 0;
 const params = new URLSearchParams(location.search);
 const requestedSite = params.get('site');
@@ -413,8 +437,20 @@ function render() {
       if (index === stage) step.setAttribute('aria-current', 'step');
     });
   }
-  if (complete || !Object.keys(sites).length) {
-    status.textContent = t[result || 'unavailable'];
+  if (complete) {
+    const completion = section(t.thanks);
+    completion.className = 'completion';
+    const mark = document.createElement('span');
+    mark.className = 'completion-mark';
+    mark.textContent = '✓';
+    mark.setAttribute('aria-hidden', 'true');
+    completion.prepend(mark);
+    el('p', result === 'thanks' ? savedMessage[picker.value] : t.previewDone, completion);
+    status.textContent = '';
+    return;
+  }
+  if (!Object.keys(sites).length) {
+    status.textContent = t.unavailable;
     return;
   }
   status.textContent = t[result] || (preview ? t.preview : '');
@@ -530,6 +566,10 @@ form.addEventListener('submit', event => {
     complete = true;
     result = 'thanks';
     render();
+    const heading = form.querySelector('h2');
+    heading.tabIndex = -1;
+    heading.focus();
+    window.scrollTo(0, 0);
   };
   const failure = () => {
     busy = false;
@@ -550,11 +590,13 @@ form.addEventListener('submit', event => {
 function submitFromPages(payload) {
   return new Promise((resolve, reject) => {
     const nonce = crypto.randomUUID();
-    const frame = el('iframe', '', document.body);
+    // The browser picks the browsing context's name when the frame is inserted.
+    const frame = document.createElement('iframe');
     frame.hidden = true;
     frame.name = 'scairy-' + nonce;
     frame.title = 'SCAIRY response delivery';
-    const post = el('form', '', document.body);
+    document.body.append(frame);
+    const post = document.createElement('form');
     post.hidden = true;
     post.method = 'POST';
     post.action = pagesEndpoint;
@@ -584,6 +626,7 @@ function submitFromPages(payload) {
       if (data?.type === 'scairy:submission' && data.nonce === nonce) finish(data.ok === true);
     }
     window.addEventListener('message', receive);
+    document.body.append(post);
     post.submit();
   });
 }
